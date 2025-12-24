@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 /* Logos */
 const LOGO_A =
-  'https://lasvegaspartybuses.com/wp-content/uploads/2022/07/las-vegas-party-bus-rental-official-logo.png';
+  'https://lasvegaspartybuses.com/wp-content/uploads/2025/12/party-bus-logo.png';
 
 const LOGO_B =
   'https://lasvegaspartybuses.com/wp-content/uploads/2022/08/Las-Vegas-Party-Bus-Logo.png';
