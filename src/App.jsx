@@ -21,9 +21,15 @@ export default function App() {
     document.body.classList.toggle('scroll-locked', view === 'roadblock');
   }, [view]);
 
+  /* Always reset scroll when view changes */
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [view]);
+
   /* Handle browser back button */
   useEffect(() => {
     const onPopState = () => {
+      window.scrollTo(0, 0);
       setView('roadblock');
       setShowVideo(false);
       setTransitionTarget(null);
@@ -34,12 +40,14 @@ export default function App() {
 
   /* Start video transition */
   const goTo = (target) => {
+    window.scrollTo(0, 0);
     setTransitionTarget(target);
     setShowVideo(true);
   };
 
   /* When video finishes, reveal section */
   const handleVideoEnd = () => {
+    window.scrollTo(0, 0);
     history.pushState({ view: transitionTarget }, '');
     setView(transitionTarget);
     setShowVideo(false);
@@ -48,6 +56,7 @@ export default function App() {
 
   /* Return to roadblock */
   const backToRoadblock = () => {
+    window.scrollTo(0, 0);
     history.pushState({}, '');
     setView('roadblock');
   };
