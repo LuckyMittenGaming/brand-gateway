@@ -95,7 +95,11 @@ export default function InternalProjects() {
   }, []);
 
   return (
-    <section className="bunka-shell" ref={shellRef}>
+  <section
+    className="bunka-shell"
+    ref={shellRef}
+    style={{ background: 'red' }}
+  >
       <ul className="bunka-list" ref={listRef}>
         {loopItems.map((item, index) => (
           <li
