@@ -117,7 +117,7 @@ export default function App() {
       {view === 'a' && (
         <section className="section-wrapper visible">
           <div className="section-content">
-            <h1 className="section-headline">Experience A</h1>
+            <h1 className="section-headline">Las Vegas Party Buses</h1>
             <p className="section-text">
               Premium party bus rentals designed for unforgettable Vegas nights.
             </p>
@@ -140,7 +140,7 @@ export default function App() {
       {view === 'b' && (
         <section className="section-wrapper visible">
           <div className="section-content">
-            <h1 className="section-headline">Experience B</h1>
+            <h1 className="section-headline">Las Vegas Party Bus</h1>
             <p className="section-text">
               High-end transportation for events, weddings, and VIP experiences.
             </p>
