@@ -121,7 +121,14 @@ export default function App() {
             <p className="section-text">
               Premium party bus rentals designed for unforgettable Vegas nights.
             </p>
-            <a className="section-cta" href="#">View Fleet</a>
+
+            <a
+              className="section-cta"
+              href="https://luckymittengaming.github.io/PB1Mock/#"
+            >
+              View Fleet
+            </a>
+
             <button className="back-button" onClick={backToRoadblock}>
               Back to Roadblock
             </button>
@@ -137,7 +144,14 @@ export default function App() {
             <p className="section-text">
               High-end transportation for events, weddings, and VIP experiences.
             </p>
-            <a className="section-cta" href="#">View Fleet</a>
+
+            <a
+              className="section-cta"
+              href="https://luckymittengaming.github.io/PB1Mock/#"
+            >
+              View Fleet
+            </a>
+
             <button className="back-button" onClick={backToRoadblock}>
               Back to Roadblock
             </button>
