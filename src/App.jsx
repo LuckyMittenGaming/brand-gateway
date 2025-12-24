@@ -16,24 +16,35 @@ export default function App() {
   const [showVideo, setShowVideo] = useState(false);
   const [transitionTarget, setTransitionTarget] = useState(null);
 
-  /* Lock scroll on roadblock */
+  /* HARD lock body scroll when roadblock is active */
   useEffect(() => {
-    document.body.classList.toggle('scroll-locked', view === 'roadblock');
-  }, [view]);
+    if (view === 'roadblock') {
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = '0';
+    } else {
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      window.scrollTo(0, 0);
+    }
 
-  /* Always reset scroll when view changes */
-  useEffect(() => {
-    window.scrollTo(0, 0);
+    return () => {
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+    };
   }, [view]);
 
   /* Handle browser back button */
   useEffect(() => {
     const onPopState = () => {
-      window.scrollTo(0, 0);
-      setView('roadblock');
       setShowVideo(false);
       setTransitionTarget(null);
+      setView('roadblock');
+      window.scrollTo(0, 0);
     };
+
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
@@ -47,18 +58,18 @@ export default function App() {
 
   /* When video finishes, reveal section */
   const handleVideoEnd = () => {
-    window.scrollTo(0, 0);
     history.pushState({ view: transitionTarget }, '');
     setView(transitionTarget);
     setShowVideo(false);
     setTransitionTarget(null);
+    window.scrollTo(0, 0);
   };
 
   /* Return to roadblock */
   const backToRoadblock = () => {
-    window.scrollTo(0, 0);
     history.pushState({}, '');
     setView('roadblock');
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -100,7 +111,7 @@ export default function App() {
                 onClick={() => goTo('a')}
                 aria-label="Enter Experience A"
               >
-                <img src={LOGO_A} alt="Las Vegas Party Bus Rental" />
+                <img src={LOGO_A} alt="Las Vegas Party Bus" />
               </button>
 
               <button
