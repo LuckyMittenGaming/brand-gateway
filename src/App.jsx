@@ -1,16 +1,97 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+const LOGO_A =
+  'https://lasvegaspartybuses.com/wp-content/uploads/2022/07/las-vegas-party-bus-rental-official-logo.png';
+
+const LOGO_B =
+  'https://lasvegaspartybuses.com/wp-content/uploads/2022/08/Las-Vegas-Party-Bus-Logo.png';
 
 export default function App() {
-  const [view, setView] = useState('roadblock');
+  const [view, setView] = useState('roadblock'); // roadblock | a | b
+  const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
-    document.title = 'Brand Gateway';
-  }, []);
+    document.body.classList.toggle('scroll-locked', view === 'roadblock');
+  }, [view]);
+
+  const goTo = (target) => {
+    setAnimating(true);
+    history.pushState({ view: target }, '');
+
+    setTimeout(() => {
+      setView(target);
+      setAnimating(false);
+    }, 800);
+  };
+
+  const backToRoadblock = () => {
+    history.pushState({}, '');
+    setView('roadblock');
+  };
 
   return (
-    <div className="app">
-      <h1>Brand Gateway</h1>
-      <p>Roadblock + Sections live here</p>
-    </div>
+    <>
+      {/* ROADBLOCK */}
+      {view === 'roadblock' && (
+        <div className={`roadblock-container ${animating ? 'animating-out' : ''}`}>
+          <div className="roadblock-panel top"></div>
+          <div className="roadblock-panel bottom"></div>
+
+          <div className="roadblock-content">
+            <p className="roadblock-instruction">Choose your experience</p>
+
+            <div className="roadblock-options">
+              <button
+                className="roadblock-option"
+                onClick={() => goTo('a')}
+                aria-label="Enter Experience A"
+              >
+                <img src={LOGO_A} alt="Las Vegas Party Bus Rental" />
+              </button>
+
+              <button
+                className="roadblock-option"
+                onClick={() => goTo('b')}
+                aria-label="Enter Experience B"
+              >
+                <img src={LOGO_B} alt="Las Vegas Party Bus" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SECTION A */}
+      <section className={`section-wrapper ${view === 'a' ? 'visible' : ''}`}>
+        <div className="section-content">
+          <h1 className="section-headline">Experience A</h1>
+          <p className="section-text">
+            Premium party bus rentals designed for unforgettable Vegas nights.
+          </p>
+          <a className="section-cta" href="#">
+            Get a Quote
+          </a>
+          <button className="back-button" onClick={backToRoadblock}>
+            Back to Roadblock
+          </button>
+        </div>
+      </section>
+
+      {/* SECTION B */}
+      <section className={`section-wrapper ${view === 'b' ? 'visible' : ''}`}>
+        <div className="section-content">
+          <h1 className="section-headline">Experience B</h1>
+          <p className="section-text">
+            High-end transportation for events, weddings, and VIP experiences.
+          </p>
+          <a className="section-cta" href="#">
+            View Fleet
+          </a>
+          <button className="back-button" onClick={backToRoadblock}>
+            Back to Roadblock
+          </button>
+        </div>
+      </section>
+    </>
   );
 }
