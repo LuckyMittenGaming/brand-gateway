@@ -12,11 +12,18 @@ const DOOR_VIDEO =
   'https://lasvegaspartybuses.com/wp-content/uploads/2025/12/Party_Bus_Door_Video_Generation.mp4';
 
 export default function App() {
-  const [view, setView] = useState('roadblock'); // roadblock | a | b
+  const [view, setView] = useState('roadblock');
   const [showVideo, setShowVideo] = useState(false);
   const [transitionTarget, setTransitionTarget] = useState(null);
 
-  /* HARD lock body scroll when roadblock is active */
+  /* 🔒 Disable browser scroll restoration (CRITICAL FIX) */
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  /* Hard lock scroll during roadblock */
   useEffect(() => {
     if (view === 'roadblock') {
       document.body.style.position = 'fixed';
@@ -56,7 +63,7 @@ export default function App() {
     setShowVideo(true);
   };
 
-  /* When video finishes, reveal section */
+  /* When video finishes */
   const handleVideoEnd = () => {
     history.pushState({ view: transitionTarget }, '');
     setView(transitionTarget);
@@ -74,7 +81,7 @@ export default function App() {
 
   return (
     <>
-      {/* VIDEO TRANSITION OVERLAY */}
+      {/* VIDEO TRANSITION */}
       {showVideo && (
         <div
           style={{
@@ -109,7 +116,6 @@ export default function App() {
               <button
                 className="roadblock-option"
                 onClick={() => goTo('a')}
-                aria-label="Enter Experience A"
               >
                 <img src={LOGO_A} alt="Las Vegas Party Bus" />
               </button>
@@ -117,7 +123,6 @@ export default function App() {
               <button
                 className="roadblock-option"
                 onClick={() => goTo('b')}
-                aria-label="Enter Experience B"
               >
                 <img src={LOGO_B} alt="Las Vegas Party Bus" />
               </button>
@@ -133,9 +138,7 @@ export default function App() {
           <p className="section-text">
             Premium party bus rentals designed for unforgettable Vegas nights.
           </p>
-          <a className="section-cta" href="#">
-            Get a Quote
-          </a>
+          <a className="section-cta" href="#">Get a Quote</a>
           <button className="back-button" onClick={backToRoadblock}>
             Back to Roadblock
           </button>
@@ -149,9 +152,7 @@ export default function App() {
           <p className="section-text">
             High-end transportation for events, weddings, and VIP experiences.
           </p>
-          <a className="section-cta" href="#">
-            View Fleet
-          </a>
+          <a className="section-cta" href="#">View Fleet</a>
           <button className="back-button" onClick={backToRoadblock}>
             Back to Roadblock
           </button>
