@@ -121,7 +121,7 @@ export default function App() {
             <p className="section-text">
               Premium party bus rentals designed for unforgettable Vegas nights.
             </p>
-            <a className="section-cta" href="#">Get a Quote</a>
+            <a className="section-cta" href="#">View Fleet</a>
             <button className="back-button" onClick={backToRoadblock}>
               Back to Roadblock
             </button>
