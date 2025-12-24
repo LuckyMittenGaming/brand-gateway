@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /* Logos */
 const LOGO_A =
@@ -12,83 +12,57 @@ const DOOR_VIDEO =
   'https://lasvegaspartybuses.com/wp-content/uploads/2025/12/Party_Bus_Door_Video_Generation.mp4';
 
 export default function App() {
-  const [view, setView] = useState('roadblock');
+  const [view, setView] = useState('roadblock'); // roadblock | a | b
   const [showVideo, setShowVideo] = useState(false);
   const [transitionTarget, setTransitionTarget] = useState(null);
 
-  /* Disable browser scroll restoration */
+  const scrollRef = useRef(null);
+
+  /* LOCK BROWSER SCROLL FOREVER */
   useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
+    document.body.style.margin = '0';
+    document.body.style.overflow = 'hidden';
   }, []);
 
-  /* Hard lock body when roadblock is visible */
-  useEffect(() => {
-    if (view === 'roadblock') {
-      document.body.style.position = 'fixed';
-      document.body.style.inset = '0';
-    } else {
-      document.body.style.position = '';
-      document.body.style.inset = '';
+  /* HARD RESET INTERNAL SCROLL */
+  const resetScroll = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
     }
-  }, [view]);
-
-  /* Kill focus + force scroll reset (critical) */
-  const hardResetScroll = () => {
-    document.activeElement?.blur();
-
-    window.scrollTo(0, 0);
-
-    // Double-frame reset defeats late layout & focus jumps
-    requestAnimationFrame(() => {
-      window.scrollTo(0, 0);
-      requestAnimationFrame(() => {
-        window.scrollTo(0, 0);
-      });
-    });
   };
-
-  /* Handle browser back */
-  useEffect(() => {
-    const onPopState = () => {
-      setShowVideo(false);
-      setTransitionTarget(null);
-      setView('roadblock');
-      hardResetScroll();
-    };
-
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
 
   /* Start transition */
   const goTo = (target) => {
-    document.activeElement?.blur();
-    hardResetScroll();
+    resetScroll();
     setTransitionTarget(target);
     setShowVideo(true);
   };
 
   /* Finish video */
   const handleVideoEnd = () => {
-    history.pushState({ view: transitionTarget }, '');
     setView(transitionTarget);
     setShowVideo(false);
     setTransitionTarget(null);
-    hardResetScroll();
+    resetScroll();
   };
 
   /* Back to roadblock */
   const backToRoadblock = () => {
-    document.activeElement?.blur();
-    history.pushState({}, '');
     setView('roadblock');
-    hardResetScroll();
+    resetScroll();
   };
 
   return (
-    <>
+    <div
+      className="app-shell"
+      ref={scrollRef}
+      style={{
+        height: '100vh',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        position: 'relative',
+      }}
+    >
       {/* VIDEO TRANSITION */}
       {showVideo && (
         <div
@@ -124,7 +98,6 @@ export default function App() {
               <button
                 className="roadblock-option"
                 onClick={() => goTo('a')}
-                tabIndex={-1}
               >
                 <img src={LOGO_A} alt="Las Vegas Party Bus" />
               </button>
@@ -132,7 +105,6 @@ export default function App() {
               <button
                 className="roadblock-option"
                 onClick={() => goTo('b')}
-                tabIndex={-1}
               >
                 <img src={LOGO_B} alt="Las Vegas Party Bus" />
               </button>
@@ -142,32 +114,36 @@ export default function App() {
       )}
 
       {/* SECTION A */}
-      <section className={`section-wrapper ${view === 'a' ? 'visible' : ''}`}>
-        <div className="section-content">
-          <h1 className="section-headline">Experience A</h1>
-          <p className="section-text">
-            Premium party bus rentals designed for unforgettable Vegas nights.
-          </p>
-          <a className="section-cta" href="#">Get a Quote</a>
-          <button className="back-button" onClick={backToRoadblock}>
-            Back to Roadblock
-          </button>
-        </div>
-      </section>
+      {view === 'a' && (
+        <section className="section-wrapper visible">
+          <div className="section-content">
+            <h1 className="section-headline">Experience A</h1>
+            <p className="section-text">
+              Premium party bus rentals designed for unforgettable Vegas nights.
+            </p>
+            <a className="section-cta" href="#">Get a Quote</a>
+            <button className="back-button" onClick={backToRoadblock}>
+              Back to Roadblock
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* SECTION B */}
-      <section className={`section-wrapper ${view === 'b' ? 'visible' : ''}`}>
-        <div className="section-content">
-          <h1 className="section-headline">Experience B</h1>
-          <p className="section-text">
-            High-end transportation for events, weddings, and VIP experiences.
-          </p>
-          <a className="section-cta" href="#">View Fleet</a>
-          <button className="back-button" onClick={backToRoadblock}>
-            Back to Roadblock
-          </button>
-        </div>
-      </section>
-    </>
+      {view === 'b' && (
+        <section className="section-wrapper visible">
+          <div className="section-content">
+            <h1 className="section-headline">Experience B</h1>
+            <p className="section-text">
+              High-end transportation for events, weddings, and VIP experiences.
+            </p>
+            <a className="section-cta" href="#">View Fleet</a>
+            <button className="back-button" onClick={backToRoadblock}>
+              Back to Roadblock
+            </button>
+          </div>
+        </section>
+      )}
+    </div>
   );
 }
