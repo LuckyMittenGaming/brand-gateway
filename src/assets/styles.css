@@ -331,4 +331,109 @@ button {
         padding: 12px 30px;
         font-size: 1rem;
     }
+    /* =========================================================
+   Bunka-Class Internal Page (APPENDED – does not replace)
+   ========================================================= */
+
+/* Internal shell lives inside your app-shell scroll system */
+.bunka-shell {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+/* Vertical editorial rhythm */
+.bunka-list {
+  display: flex;
+  flex-direction: column;
+  gap: 180px;
+  padding: 140px 8vw;
+  margin: 0;
+  list-style: none;
+}
+
+/* Card */
+.bunka-card {
+  position: relative;
+  width: 100%;
+  height: 72vh;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(60px);
+  will-change: transform;
+  transition:
+    opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.bunka-card.reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Media */
+.bunka-media {
+  position: absolute;
+  inset: 0;
+}
+
+.bunka-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* placeholder safe */
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Editorial overlay */
+.bunka-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.65),
+    rgba(0, 0, 0, 0)
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.bunka-index {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  opacity: 0.6;
+  margin-bottom: 12px;
+}
+
+.bunka-overlay h3 {
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  margin: 0;
+}
+
+.bunka-overlay p {
+  margin-top: 10px;
+  font-size: 1.05rem;
+  opacity: 0.8;
+}
+
+/* Hover behavior */
+.bunka-card:hover .bunka-overlay {
+  opacity: 1;
+}
+
+.bunka-card:hover img {
+  transform: scale(1.06);
+}
+
+/* Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .bunka-card,
+  .bunka-media img {
+    transition: none;
+  }
 }
