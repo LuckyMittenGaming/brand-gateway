@@ -16,67 +16,75 @@ export default function App() {
   const [showVideo, setShowVideo] = useState(false);
   const [transitionTarget, setTransitionTarget] = useState(null);
 
-  /* 🔒 Disable browser scroll restoration (CRITICAL FIX) */
+  /* Disable browser scroll restoration */
   useEffect(() => {
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
   }, []);
 
-  /* Hard lock scroll during roadblock */
+  /* Hard lock body when roadblock is visible */
   useEffect(() => {
     if (view === 'roadblock') {
       document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.top = '0';
+      document.body.style.inset = '0';
     } else {
       document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
-      window.scrollTo(0, 0);
+      document.body.style.inset = '';
     }
-
-    return () => {
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
-    };
   }, [view]);
 
-  /* Handle browser back button */
+  /* Kill focus + force scroll reset (critical) */
+  const hardResetScroll = () => {
+    document.activeElement?.blur();
+
+    window.scrollTo(0, 0);
+
+    // Double-frame reset defeats late layout & focus jumps
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+      });
+    });
+  };
+
+  /* Handle browser back */
   useEffect(() => {
     const onPopState = () => {
       setShowVideo(false);
       setTransitionTarget(null);
       setView('roadblock');
-      window.scrollTo(0, 0);
+      hardResetScroll();
     };
 
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  /* Start video transition */
+  /* Start transition */
   const goTo = (target) => {
-    window.scrollTo(0, 0);
+    document.activeElement?.blur();
+    hardResetScroll();
     setTransitionTarget(target);
     setShowVideo(true);
   };
 
-  /* When video finishes */
+  /* Finish video */
   const handleVideoEnd = () => {
     history.pushState({ view: transitionTarget }, '');
     setView(transitionTarget);
     setShowVideo(false);
     setTransitionTarget(null);
-    window.scrollTo(0, 0);
+    hardResetScroll();
   };
 
-  /* Return to roadblock */
+  /* Back to roadblock */
   const backToRoadblock = () => {
+    document.activeElement?.blur();
     history.pushState({}, '');
     setView('roadblock');
-    window.scrollTo(0, 0);
+    hardResetScroll();
   };
 
   return (
@@ -116,6 +124,7 @@ export default function App() {
               <button
                 className="roadblock-option"
                 onClick={() => goTo('a')}
+                tabIndex={-1}
               >
                 <img src={LOGO_A} alt="Las Vegas Party Bus" />
               </button>
@@ -123,6 +132,7 @@ export default function App() {
               <button
                 className="roadblock-option"
                 onClick={() => goTo('b')}
+                tabIndex={-1}
               >
                 <img src={LOGO_B} alt="Las Vegas Party Bus" />
               </button>
