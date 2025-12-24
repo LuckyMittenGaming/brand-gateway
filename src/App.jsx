@@ -1,6 +1,12 @@
-const { useState, useEffect } = React;
+import { useState, useEffect } from 'react';
 
-function App() {
+export default function App() {
+  const [view, setView] = useState('roadblock');
+
+  useEffect(() => {
+    document.title = 'Brand Gateway';
+  }, []);
+
   return (
     <div className="app">
       <h1>Brand Gateway</h1>
@@ -8,8 +14,3 @@ function App() {
     </div>
   );
 }
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  React.createElement(React.StrictMode, null, React.createElement(App))
-);
